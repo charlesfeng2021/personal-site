@@ -61,39 +61,66 @@
   </main>
 
   <script>
-  let board = ["","","","","","","","",""];
+let board = ["","","","","","","","",""];
+let gameOver = false;
 
-  function renderBoard() {
-    const boardDiv = document.getElementById("board");
-    boardDiv.innerHTML = "";
-    board.forEach((cell, i) => {
-      const btn = document.createElement("button");
-      btn.textContent = cell;
-      btn.style.width = "80px";
-      btn.style.height = "80px";
-      btn.style.fontSize = "2rem";
-      btn.onclick = () => playerMove(i);
-      boardDiv.appendChild(btn);
-    });
-  }
+function renderBoard() {
+  const boardDiv = document.getElementById("board");
+  boardDiv.innerHTML = "";
+  board.forEach((cell, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = cell;
+    btn.style.width = "80px";
+    btn.style.height = "80px";
+    btn.style.fontSize = "2rem";
+    btn.onclick = () => playerMove(i);
+    boardDiv.appendChild(btn);
+  });
+  checkGameOver();
+}
 
-  async function playerMove(i) {
-    if (board[i] !== "") return;
-    board[i] = "X";
-    renderBoard();
-
-    let res = await fetch("http://127.0.0.1:8000/move", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({board}),
-    });
-    let data = await res.json();
-    if (data.move >= 0) {
-      board[data.move] = "O";
+function checkGameOver() {
+  const winningCombos = [
+    [0,1,2],[3,4,5],[6,7,8], // rows
+    [0,3,6],[1,4,7],[2,5,8], // cols
+    [0,4,8],[2,4,6]           // diagonals
+  ];
+  
+  for (let combo of winningCombos) {
+    const [a,b,c] = combo;
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      document.getElementById("status").textContent = board[a] + " wins!";
+      gameOver = true;
+      return;
     }
-    renderBoard();
   }
 
+  if (!board.includes("")) {
+    document.getElementById("status").textContent = "It's a draw!";
+    gameOver = true;
+  }
+}
+
+async function playerMove(i) {
+  if (board[i] !== "" || gameOver) return;
+  board[i] = "X";
   renderBoard();
-  </script>
+
+  if (gameOver) return;
+
+  // Ask backend for AI move
+  let res = await fetch("http://127.0.0.1:8000/move", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({board}),
+  });
+  let data = await res.json();
+  if (data.move >= 0) {
+    board[data.move] = "O";
+  }
+  renderBoard();
+}
+
+renderBoard();
+</script>
 </body>
