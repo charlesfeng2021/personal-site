@@ -40,7 +40,8 @@
 <body>
   <header>
     <h1>👋 Hi, I'm Charles Feng</h1>
-    <p>Welcome to my personal site</p>
+    <p>Welcome to my personal site.</p>
+	<p>LinkedIn: https://www.linkedin.com/in/shengjiefeng/</p>
   </header>
 
   <main>
@@ -53,13 +54,46 @@
       <h2>Projects</h2>
       <div class="project">
         <h3>Interactive Tic Tac Toe (Coming Soon)</h3>
-        <p>A reinforcement learning agent that plays tic-tac-toe against you!</p>
-      </div>
-      <div class="project">
-        <h3>Other Project</h3>
-        <p>A description of another project you want to showcase.</p>
+        <div id="board" style="display:grid;grid-template-columns:repeat(3,80px);gap:5px;width:max-content;"></div>
+        <p id="status"></p>
       </div>
     </section>
   </main>
+
+  <script>
+  let board = ["","","","","","","","",""];
+
+  function renderBoard() {
+    const boardDiv = document.getElementById("board");
+    boardDiv.innerHTML = "";
+    board.forEach((cell, i) => {
+      const btn = document.createElement("button");
+      btn.textContent = cell;
+      btn.style.width = "80px";
+      btn.style.height = "80px";
+      btn.style.fontSize = "2rem";
+      btn.onclick = () => playerMove(i);
+      boardDiv.appendChild(btn);
+    });
+  }
+
+  async function playerMove(i) {
+    if (board[i] !== "") return;
+    board[i] = "X";
+    renderBoard();
+
+    let res = await fetch("http://127.0.0.1:8000/move", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({board}),
+    });
+    let data = await res.json();
+    if (data.move >= 0) {
+      board[data.move] = "O";
+    }
+    renderBoard();
+  }
+
+  renderBoard();
+  </script>
 </body>
-</html>
