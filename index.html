@@ -41,22 +41,22 @@
   <header>
     <h1>👋 Hi, I'm Charles Feng</h1>
     <p>Welcome to my personal site.</p>
-	<p>LinkedIn: https://www.linkedin.com/in/shengjiefeng/</p>
+    <p>LinkedIn: <a href="https://www.linkedin.com/in/shengjiefeng/" target="_blank">My LinkedIn</a></p>
   </header>
 
   <main>
     <section>
       <h2>About Me</h2>
-      <p>3+ Yrs in market risk, 3+ Yrs in investment risk, with postgrad degrees in coding and quantative finance. This is intended to showcase my side projects</p>
+      <p>3+ Yrs in market risk, 3+ Yrs in investment risk, with postgrad degrees in coding and quantative finance. This is intended to showcase my side projects.</p>
     </section>
 
     <section>
       <h2>Projects</h2>
       <div class="project">
-        <h3>Interactive Tic Tac Toe (Coming Soon)</h3>
+        <h3>Interactive Tic Tac Toe</h3>
         <div id="board" style="display:grid;grid-template-columns:repeat(3,80px);gap:5px;width:max-content;"></div>
         <p id="status"></p>
-		<button id="restartBtn" style="margin-top:10px;padding:5px 10px;font-size:1rem;">Challenge again!</button>
+        <button id="restartBtn" style="margin-top:10px;padding:5px 10px;font-size:1rem;">Challenge again!</button>
       </div>
     </section>
   </main>
@@ -110,7 +110,7 @@ async function playerMove(i) {
   if (gameOver) return;
 
   // Ask backend for AI move
-  let res = await fetch("https://personal-site-ilae.onrender.com/move" {
+  let res = await fetch("https://personal-site-ilae.onrender.com/move", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({board}),
@@ -135,5 +135,5 @@ document.getElementById("restartBtn").onclick = restartGame;
 
 renderBoard();
 </script>
->>>>>>> 70adee489e83064ac83340bd28d22a3761eb7473
 </body>
+</html>
